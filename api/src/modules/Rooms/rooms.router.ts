@@ -7,6 +7,7 @@ const RoomsRouter = express.Router();
 
 RoomsRouter.get('/', async (req, res) => {
   const allOpenRooms = await RoomService.getAllOpenRooms();
+  console.log('[Czz] allOpenRooms: ', allOpenRooms);
   return res.status(200).json(allOpenRooms);
 });
 

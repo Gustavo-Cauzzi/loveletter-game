@@ -80,15 +80,9 @@ const startGame = async (userId: string, roomId: string) => {
 };
 
 const getAllOpenRooms = async () => {
-  const rooms = await RoomsRepository.getAllOpenRooms();
-
-  if (!rooms) {
-    throw new AppError('Failed to retrieve rooms', 500);
-  }
-
-  const openRooms = rooms.filter(room => !room.started);
-
-  return openRooms;
+  const openRooms = await RoomsRepository.getAllOpenRooms();
+  console.log('[Czz] openRooms: ', openRooms);
+  return openRooms ?? [];
 };
 
 export const RoomService = {

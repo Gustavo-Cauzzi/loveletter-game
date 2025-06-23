@@ -1,9 +1,25 @@
 import { useRoomsQuery } from "../../api/rooms";
-import { CircularProgress } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { UserInfo } from "../../components/UserInfo";
+import CreateRoomDialog from "./CreatRoomDialog";
+import { useEffect, useState } from "react";
+import { socketService } from "../../services/socket-io";
+import { useQueryClient } from "@tanstack/react-query";
 
 export function Rooms() {
+  const queryClient = useQueryClient();
   const { data: rooms, isLoading, error } = useRoomsQuery();
+  const [createRoomDialogOpen, setCreateRoomDialogOpen] = useState(false);
+
+  useEffect(() => {
+    socketService.on("room-created", () => {
+      queryClient.invalidateQueries({ queryKey: ["rooms"] });
+    });
+
+    return () => {
+      socketService.off("room-created");
+    };
+  }, []);
 
   return (
     <main className="flex flex-1 w-full justify-center h-screen p-8">
@@ -13,8 +29,22 @@ export function Rooms() {
         </div>
       </header>
 
-      <div className="flex flex-col gap-4 max-w-xl min-w-96">
-        <h1 className="text-2xl font-bold">Rooms</h1>
+      <div className="flex flex-col gap-4 max-w-4xl flex-1 min-w-96">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Rooms</h1>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setCreateRoomDialogOpen(true)}
+          >
+            Create Room
+          </Button>
+          <CreateRoomDialog
+            open={createRoomDialogOpen}
+            onClose={() => setCreateRoomDialogOpen(false)}
+          />
+        </div>
 
         {error && (
           <div className="flex flex-col gap-1 bg-red-500/10 p-4 rounded-md border border-red-500/20">
@@ -36,8 +66,20 @@ export function Rooms() {
         )}
 
         {rooms?.data.map((room) => (
-          <div key={room.id}>
-            <h1>{room.name}</h1>
+          <div
+            key={room.id}
+            className="flex gap-2 p-2 px-4 bg-background-550 rounded-md items-center justify-between"
+          >
+            <div className="flex flex-1 gap-2 items-center">
+              <span className="text-xl font-bold">{room.name}</span>
+              <span className="text-sm">
+                {room.numberOfPlayers}/{room.maxNumberOfPlayers}
+              </span>
+            </div>
+
+            <Button variant="contained" color="primary">
+              Join
+            </Button>
           </div>
         ))}
       </div>

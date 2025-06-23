@@ -1,8 +1,5 @@
 import { v4 } from 'uuid';
 import { Room } from './Room.types';
-import { GamesRepository } from '@modules/Game/game.repository';
-import { isTruthy } from '@shared/utils/utils';
-import { toMap } from '@shared/utils/groupUtils';
 
 const rooms: Room[] = [];
 
@@ -61,7 +58,8 @@ export const getAllOpenRooms = async () => {
   // const allGames = await Promise.all(allGameIds.filter(isTruthy).map(GamesRepository.getGameById))
   // const allStartedGames
   // const allGamesById = toMap(allGames, game => game.id)
-  return rooms.filter(room => room.started);
+  console.log('[Czz] rooms: ', rooms);
+  return rooms.filter(room => !room.started);
 };
 
 export const RoomsRepository = {
