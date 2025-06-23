@@ -69,6 +69,9 @@ export interface Game {
   }>;
 }
 
+/**
+ * Game without deck and playersData to avoid leaking sensitive information
+ */
 export type SafeGame = TypedOmit<Game, 'deck' | 'playersData'> & {
   deckCount: number;
   playersData: Record<
