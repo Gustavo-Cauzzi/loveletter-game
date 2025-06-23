@@ -9,7 +9,10 @@ export default function ensureAuthenticated(
   response: Response,
   next: NextFunction,
 ): void {
-  if (request.path.includes('/users')) {
+  if (
+    request.path.includes('/user/fakeLogin') ||
+    request.path.includes('/user/login')
+  ) {
     return next();
   }
 

@@ -5,9 +5,9 @@ import { RoomsRouter, RoomsSocketRouter } from './Rooms/rooms.router';
 import { UserIoRouter, UsersRouter } from './Users/users.router';
 
 export const allRoutes: Record<string, Router> = {
-  '/rooms': RoomsRouter,
-  '/games': GameRouter,
-  '/users': UsersRouter,
+  '/room': RoomsRouter,
+  '/game': GameRouter,
+  '/user': UsersRouter,
 };
 
 export type ApplicationIoRouter = (

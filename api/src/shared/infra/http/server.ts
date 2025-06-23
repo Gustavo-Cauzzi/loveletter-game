@@ -5,10 +5,10 @@ import 'express-async-errors';
 import http from 'http';
 import { Server, Socket } from 'socket.io';
 import { DefaultEventsMap } from 'socket.io/dist/typed-events';
-import { allIoRoutes, allRoutes } from '../../../modules/router';
 import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 import { errorMiddleware } from '../middlewares/errorMiddleware';
 import { injectCurrentUserIfLoggedIn } from '../middlewares/socket/injectCurrentUserIfLoggedIn';
+import { allIoRoutes, allRoutes } from '@modules/router';
 
 const PORT = 3333;
 
@@ -18,7 +18,7 @@ const io = new Server(server, {
   cors: {
     origin: '*',
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
-    allowedHeaders: ['teste'],
+    allowedHeaders: ['*'],
     credentials: true,
   },
 });

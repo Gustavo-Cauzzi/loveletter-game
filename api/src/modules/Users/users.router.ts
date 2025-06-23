@@ -7,6 +7,7 @@ import {
   login,
   usersSockets,
 } from './users.service';
+import { v4 } from 'uuid';
 const UsersRouter = express.Router();
 
 UsersRouter.post('/', async (req, res) => {
@@ -26,11 +27,12 @@ UsersRouter.post('/login', async (req, res) => {
 });
 
 UsersRouter.post('/fakeLogin', async (req, res) => {
-  const { username, id } = req.body;
+  const { username } = req.body;
+  const id = v4();
 
   const token = await fakeLogin(username, id);
 
-  return res.status(200).json({ token });
+  return res.status(200).json({ token, id });
 });
 
 UsersRouter.get('/debug/sockets', async (_req, res) => {
