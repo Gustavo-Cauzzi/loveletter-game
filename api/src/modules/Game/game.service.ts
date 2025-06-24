@@ -21,10 +21,10 @@ export const gameToSafeGame = (game: Game, userId: User['id']): SafeGame => {
   const { deck, playersData, outOfDeckCard, ...safeGame } = game;
 
   const safePlayersData = Object.entries(playersData).reduce(
-    (acc, [playerId, data]) => {
+    (acc, [playerId, { heldCards, ...data }]) => {
       acc[playerId] = {
         ...data,
-        heldCardsCount: data.heldCards.length,
+        heldCardsCount: heldCards.length,
       };
       return acc;
     },
