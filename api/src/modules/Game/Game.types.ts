@@ -67,12 +67,17 @@ export interface Game {
     action: string;
     timestamp: Date;
   }>;
+
+  outOfDeckCard: Card;
 }
 
 /**
  * Game without deck and playersData to avoid leaking sensitive information
  */
-export type SafeGame = TypedOmit<Game, 'deck' | 'playersData'> & {
+export type SafeGame = TypedOmit<
+  Game,
+  'deck' | 'playersData' | 'outOfDeckCard'
+> & {
   deckCount: number;
   playersData: Record<
     User['id'],
@@ -80,4 +85,5 @@ export type SafeGame = TypedOmit<Game, 'deck' | 'playersData'> & {
       heldCardsCount: number;
     }
   >;
+  yourPlayerData: PlayerData;
 };

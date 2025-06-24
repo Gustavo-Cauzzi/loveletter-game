@@ -6,7 +6,8 @@ type Event =
   | "/rooms/new"
   | "/rooms/update"
   | "/rooms/update"
-  | "/rooms/current/update";
+  | "/rooms/current/update"
+  | "/room/started";
 
 class SocketIOService {
   private socket: Socket | null = null;

@@ -55,9 +55,9 @@ GameRouter.get('/:gameId', async (req, res) => {
 
   if (!gameId) throw new AppError('Game ID is required', 422);
 
-  const gameState = await GameService.getGame(gameId);
+  const gameState = await GameService.getGame(gameId, req.user.id);
 
-  return res.status(200).json({ gameState });
+  return res.status(200).json(gameState);
 });
 
 const notifyAllOthers = (

@@ -11,6 +11,22 @@ export const createGame = async (room: Room) => {
       Math.floor(Math.random() * room.connectedPlayersIds.length)
     ];
 
+  const shuffledDeck = createShuffledDeck();
+  const outOfDeckCard = shuffledDeck.pop()!;
+
+  const playersData = Object.fromEntries(
+    room.connectedPlayersIds.map(id => [
+      id,
+      {
+        discardedCards: [],
+        playedCards: [],
+        heldCards: [shuffledDeck.pop()],
+        isEliminated: false,
+        isProtected: false,
+      } as PlayerData,
+    ]),
+  );
+
   const newGame: Game = {
     id: v4(),
     type: 'love-letter',
@@ -20,22 +36,12 @@ export const createGame = async (room: Room) => {
       phase: 'setup',
       playedCard: undefined,
     },
-    deck: createShuffledDeck(),
+    deck: shuffledDeck,
     log: [],
-    playersData: Object.fromEntries(
-      room.connectedPlayersIds.map(id => [
-        id,
-        {
-          discardedCards: [],
-          playedCards: [],
-          heldCards: [],
-          isEliminated: false,
-          isProtected: false,
-        } as PlayerData,
-      ]),
-    ),
+    playersData,
     started: true,
     winner: undefined,
+    outOfDeckCard,
   };
 
   games.push(newGame);

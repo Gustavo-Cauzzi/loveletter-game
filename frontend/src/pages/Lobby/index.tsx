@@ -40,6 +40,9 @@ export function Lobby() {
       onSuccess: () => {
         navigate("/game");
       },
+      onError: () => {
+        toast.error("Failed to start game");
+      },
     });
   };
 

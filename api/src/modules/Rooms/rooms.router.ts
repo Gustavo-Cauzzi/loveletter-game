@@ -24,19 +24,16 @@ RoomsRouter.get('/:id', async (req, res) => {
 
 RoomsRouter.post('/', async (req, res) => {
   const { name } = req.body;
-  console.log('req.user: ', req.user);
   const socket = usersSockets[req.user.id];
 
   const newRoom = await RoomService.createRoom(name, req.user.id);
-  console.log('Creating room', req.user, socket.id);
   socket.broadcast.emit('/rooms/new', newRoom);
 
-  console.log('[Czz] newRoom: ', newRoom);
   return res.status(201).json(newRoom);
 });
 
 RoomsRouter.patch('/join', async (req, res) => {
-  const { roomId } = req.body;
+  const { roomId } = req.body; // TODO: Get current roomId From User
   const joiningUserId = req.user.id;
 
   const userSocket = usersSockets[joiningUserId];
@@ -65,7 +62,7 @@ RoomsRouter.patch('/join', async (req, res) => {
 });
 
 RoomsRouter.patch('/leave', async (req, res) => {
-  const { roomId } = req.body;
+  const { roomId } = req.body; // TODO: Get current roomId From User
   const leavingUserId = req.user.id;
 
   const userSocket = usersSockets[leavingUserId];
@@ -93,8 +90,8 @@ RoomsRouter.patch('/leave', async (req, res) => {
   return res.status(202).json(room);
 });
 
-RoomsRouter.get('/start/:roomId', async (req, res) => {
-  const roomId = req.params.roomId;
+RoomsRouter.patch('/start', async (req, res) => {
+  const { roomId } = req.body; // TODO: Get current roomId From User
 
   if (!roomId) {
     throw new AppError('roomId not provided', 400);

@@ -33,12 +33,17 @@ export const CurrentRoomProvider: React.FC<CurrentRoomProviderProps> = ({
   });
 
   useEffect(() => {
+    // TODO: Better handling of events
     socketService.on("/rooms/current/update", () => {
+      queryClient.invalidateQueries({ queryKey: ["currentRoom"] });
+    });
+    socketService.on("/room/started", () => {
       queryClient.invalidateQueries({ queryKey: ["currentRoom"] });
     });
 
     return () => {
       socketService.off("/rooms/current/update");
+      socketService.off("/room/started");
     };
   }, []);
 

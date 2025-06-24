@@ -55,11 +55,6 @@ const deleteRoom = async (id: string) => {
 };
 
 const getAllOpenRooms = async () => {
-  // const allGameIds =  rooms.map(room => room.gameId);
-  // const allGames = await Promise.all(allGameIds.filter(isTruthy).map(GamesRepository.getGameById))
-  // const allStartedGames
-  // const allGamesById = toMap(allGames, game => game.id)
-  console.log('[Czz] rooms: ', rooms);
   return rooms.filter(room => !room.started);
 };
 

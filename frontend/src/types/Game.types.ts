@@ -56,6 +56,8 @@ export interface Game {
     playedCard: Card["id"] | undefined;
   };
 
+  yourPlayerData: PlayerData;
+
   playersData: Record<
     User["id"],
     TypedOmit<PlayerData, "heldCards"> & {

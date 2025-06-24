@@ -17,8 +17,8 @@ import {
 } from './Game.types';
 import { cardActions } from './card-actions';
 
-export const gameToSafeGame = (game: Game): SafeGame => {
-  const { deck, playersData, ...safeGame } = game;
+export const gameToSafeGame = (game: Game, userId: User['id']): SafeGame => {
+  const { deck, playersData, outOfDeckCard, ...safeGame } = game;
 
   const safePlayersData = Object.entries(playersData).reduce(
     (acc, [playerId, data]) => {
@@ -35,6 +35,7 @@ export const gameToSafeGame = (game: Game): SafeGame => {
     ...safeGame,
     deckCount: deck.length,
     playersData: safePlayersData,
+    yourPlayerData: playersData[userId],
   };
 };
 
@@ -214,8 +215,12 @@ export const discardCard = async (
   return { success: true };
 };
 
-export const getGame = async (gameId: string) => {
-  return { gameId, state: 'example-state' };
+export const getGame = async (gameId: string, userId: User['id']) => {
+  const game = await GamesRepository.getGameById(gameId);
+  if (!game) {
+    throw new AppError('Game not found', 404);
+  }
+  return gameToSafeGame(game, userId);
 };
 
 export const GameService = {
