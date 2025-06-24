@@ -9,7 +9,7 @@ import { User } from './User.types';
 
 export const usersSockets: Record<User['id'], Socket> = {};
 
-export const createUser = async (username: string, password: string) => {
+const createUser = async (username: string, password: string) => {
   const newUser = await UsersRepository.createUser(username, password);
 
   const token = jwt.sign(
@@ -20,7 +20,7 @@ export const createUser = async (username: string, password: string) => {
   return { ...newUser, token };
 };
 
-export const login = async (username: string, password: string) => {
+const login = async (username: string, password: string) => {
   const user = await UsersRepository.getUserByUsername(username);
 
   if (user && user.password === sha256(password)) {
@@ -33,16 +33,28 @@ export const login = async (username: string, password: string) => {
   throw new AppError('User does not exist or incorrect password', 401);
 };
 
-export const fakeLogin = async (username: string, id: string) => {
+const fakeLogin = async (username: string, id: string) => {
   return jwt.sign(
     { username, id, isFakeUser: true, expirationDate: addDays(new Date(), 1) },
     authConfig.jwt.secret,
   );
 };
 
-export const assignSocketToUser = (socket: Socket, userId: string) => {
+const assignSocketToUser = (socket: Socket, userId: string) => {
   console.log(`socket ${socket.id} conectado com o usuário ${userId}`);
   const existentSocket = usersSockets[userId];
   if (existentSocket) existentSocket.disconnect();
   usersSockets[userId] = socket;
+};
+
+const getUsersByIds = async (ids: string[]) => {
+  return await UsersRepository.getUsersByIds(ids);
+};
+
+export const UserService = {
+  createUser,
+  login,
+  fakeLogin,
+  assignSocketToUser,
+  getUsersByIds,
 };

@@ -21,7 +21,7 @@ export const Login = () => {
 
   return (
     <main className="flex flex-col gap-4 justify-center items-center h-screen">
-      <div className="min-w-[400px] max-w-[500px] w-full bg-background-100 rounded-lg shadow-2xl border border-gray-700">
+      <div className="min-w-[400px] max-w-[500px] w-full bg-background-550 rounded-lg shadow-2xl border border-gray-700">
         <div className="p-8">
           <div className="text-center mb-6">
             <h1 className="text-3xl font-bold text-white mb-2">Loleleller</h1>

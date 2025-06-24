@@ -45,9 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       username: decoded.username,
     });
     api.defaults.headers.common.Authorization = `Bearer ${token}`;
-    socketService.connect(token).then(() => {
-      console.log("[Czz] aa ");
-    });
+    socketService.connect(token);
   };
 
   useEffect(() => {

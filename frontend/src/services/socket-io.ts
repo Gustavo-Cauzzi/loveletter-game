@@ -1,6 +1,13 @@
 import { io, Socket } from "socket.io-client";
 
 type ConnectOpts = Parameters<typeof io>[1];
+
+type Event =
+  | "/rooms/new"
+  | "/rooms/update"
+  | "/rooms/update"
+  | "/rooms/current/update";
+
 class SocketIOService {
   private socket: Socket | null = null;
   private url: string;
@@ -56,7 +63,7 @@ class SocketIOService {
   }
 
   // Emit an event to the server
-  emit<T>(event: string, data?: T): void {
+  emit<T>(event: Event, data?: T): void {
     if (this.socket && this.socket.connected) {
       this.socket.emit(event, data);
     } else {
@@ -65,7 +72,7 @@ class SocketIOService {
   }
 
   // Listen to an event from the server
-  on<T>(event: string, callback: (...args: T[]) => void): void {
+  on<T>(event: Event, callback: (...args: T[]) => void): void {
     if (this.socket) {
       this.socket.on(event, callback);
     } else {
@@ -74,7 +81,7 @@ class SocketIOService {
   }
 
   // Remove event listener
-  off<T>(event: string, callback?: (...args: T[]) => void): void {
+  off<T>(event: Event, callback?: (...args: T[]) => void): void {
     if (this.socket) {
       this.socket.off(event, callback);
     }

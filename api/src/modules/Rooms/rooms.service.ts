@@ -12,6 +12,14 @@ const createRoom = async (name: string, creatingUserId: string) => {
   return await RoomsRepository.createRoom(name, creatingUserId);
 };
 
+const isUserInRoom = async (userId: string) => {
+  const rooms = await RoomsRepository.getUserRooms(userId);
+  if (rooms.length > 1) {
+    console.error('User in multiple rooms', userId, rooms);
+  }
+  return rooms[0];
+};
+
 const joinRoom = async (roomId: string, userId: string) => {
   const room = await RoomsRepository.getRoomById(roomId);
 
@@ -19,7 +27,7 @@ const joinRoom = async (roomId: string, userId: string) => {
     throw new AppError('Unable to find the respective room', 400);
   }
 
-  if (room.numberOfPlayers === room.maxNumberOfPlayers) {
+  if (room.connectedPlayersIds.length === room.maxNumberOfPlayers) {
     throw new AppError('Room is full', 401);
   }
 
@@ -34,7 +42,6 @@ const joinRoom = async (roomId: string, userId: string) => {
 
   const updatedRoom = await RoomsRepository.updateRoom(roomId, {
     connectedPlayersIds: [...room.connectedPlayersIds, userId],
-    numberOfPlayers: room.numberOfPlayers + 1,
   });
 
   if (!updatedRoom) {
@@ -81,8 +88,15 @@ const startGame = async (userId: string, roomId: string) => {
 
 const getAllOpenRooms = async () => {
   const openRooms = await RoomsRepository.getAllOpenRooms();
-  console.log('[Czz] openRooms: ', openRooms);
   return openRooms ?? [];
+};
+
+const getRoomById = async (roomId: string) => {
+  return await RoomsRepository.getRoomById(roomId);
+};
+
+const leaveRoom = async (roomId: string, leavingUserId: string) => {
+  return await RoomsRepository.leaveRoom(roomId, leavingUserId);
 };
 
 export const RoomService = {
@@ -90,4 +104,7 @@ export const RoomService = {
   joinRoom,
   startGame,
   getAllOpenRooms,
+  isUserInRoom,
+  getRoomById,
+  leaveRoom,
 };

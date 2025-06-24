@@ -42,8 +42,16 @@ const getUserById = async (id: string) => {
   return users.find(user => user.id === id);
 };
 
+const getUsersByIds = async (ids: string[]) => {
+  let users: User[] = [];
+  await get(usersRef).then(snapshot => (users = snapshot.val() ?? []));
+
+  return users.filter(user => ids.includes(user.id));
+};
+
 export const UsersRepository = {
   createUser,
   getUserByUsername,
   getUserById,
+  getUsersByIds,
 };

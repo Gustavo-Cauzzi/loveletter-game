@@ -9,6 +9,8 @@ import {
   Button,
 } from "@mui/material";
 import { useCreateRoomMutation } from "../../api/rooms";
+import { useNavigate } from "react-router";
+import { ErrorCard } from "../../components/ErrorCard";
 
 interface CreateRoomProps {
   open: boolean;
@@ -20,7 +22,8 @@ interface FormData {
 }
 
 const CreateRoomDialog: React.FC<CreateRoomProps> = ({ open, onClose }) => {
-  const { mutate: createRoom, isPending } = useCreateRoomMutation();
+  const navigate = useNavigate();
+  const { mutate: createRoom, isPending, error } = useCreateRoomMutation();
   const {
     control,
     handleSubmit,
@@ -34,7 +37,8 @@ const CreateRoomDialog: React.FC<CreateRoomProps> = ({ open, onClose }) => {
 
   const onSubmit = (data: FormData) => {
     createRoom(data.name, {
-      onSuccess: () => {
+      onSuccess: (room) => {
+        navigate(`/room/${room.id}`);
         reset();
         onClose();
       },
@@ -51,7 +55,14 @@ const CreateRoomDialog: React.FC<CreateRoomProps> = ({ open, onClose }) => {
       <DialogTitle>Create Room</DialogTitle>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent>
+        <DialogContent sx={{ pt: 0 }}>
+          {error && (
+            <ErrorCard
+              title="Error"
+              description={error.response?.data?.message ?? error.message}
+            />
+          )}
+
           <Controller
             name="name"
             control={control}

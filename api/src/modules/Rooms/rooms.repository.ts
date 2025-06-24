@@ -1,5 +1,6 @@
 import { v4 } from 'uuid';
 import { Room } from './Room.types';
+import AppError from '@shared/exceptions/AppException';
 
 const rooms: Room[] = [];
 
@@ -9,7 +10,6 @@ const createRoom = async (name: string, creatingUserId: string) => {
   const newRoom: Room = {
     id: v4(),
     name,
-    numberOfPlayers: 1,
     gameId: undefined,
     connectedPlayersIds: [creatingUserId],
     leaderPlayerId: creatingUserId,
@@ -17,6 +17,7 @@ const createRoom = async (name: string, creatingUserId: string) => {
     maxNumberOfPlayers: MAX_NUMBER_OF_PLAYERS,
   };
   rooms.push(newRoom);
+  return newRoom;
 };
 
 const getRoomByGameId = async (gameId: string) => {
@@ -53,13 +54,35 @@ const deleteRoom = async (id: string) => {
   return false;
 };
 
-export const getAllOpenRooms = async () => {
+const getAllOpenRooms = async () => {
   // const allGameIds =  rooms.map(room => room.gameId);
   // const allGames = await Promise.all(allGameIds.filter(isTruthy).map(GamesRepository.getGameById))
   // const allStartedGames
   // const allGamesById = toMap(allGames, game => game.id)
   console.log('[Czz] rooms: ', rooms);
   return rooms.filter(room => !room.started);
+};
+
+const getUserRooms = async (userId: string) => {
+  return rooms.filter(room => room.connectedPlayersIds.includes(userId));
+};
+
+const leaveRoom = async (roomId: string, leavingUserId: string) => {
+  const room = await getRoomById(roomId);
+  if (!room) throw new AppError('Room not found', 404);
+  room.connectedPlayersIds = room.connectedPlayersIds.filter(
+    id => id !== leavingUserId,
+  );
+
+  if (room.connectedPlayersIds.length === 0) {
+    await deleteRoom(roomId);
+  }
+
+  if (room.leaderPlayerId === leavingUserId) {
+    room.leaderPlayerId = room.connectedPlayersIds[0];
+  }
+
+  return room;
 };
 
 export const RoomsRepository = {
@@ -70,4 +93,6 @@ export const RoomsRepository = {
   getRoomByName,
   getRoomByGameId,
   getAllOpenRooms,
+  getUserRooms,
+  leaveRoom,
 };

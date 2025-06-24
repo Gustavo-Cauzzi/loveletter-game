@@ -2,6 +2,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { useMediaQuery } from "@mui/material";
 import { AuthProvider } from "./auth";
 import { useMemo } from "react";
+import { CurrentRoomProvider } from "./currentRoom";
 
 export const Providers = ({ children }: { children: React.ReactNode }) => {
   // Detect system preference for dark mode
@@ -35,7 +36,9 @@ export const Providers = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <ThemeProvider theme={baseTheme}>
-      <AuthProvider>{children}</AuthProvider>
+      <AuthProvider>
+        <CurrentRoomProvider>{children}</CurrentRoomProvider>
+      </AuthProvider>
     </ThemeProvider>
   );
 };
